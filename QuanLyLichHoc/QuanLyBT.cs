@@ -144,30 +144,34 @@ namespace QuanLyLichHoc
                 return;
             }
 
-            string selectedAssignment = lstAssignments.SelectedItem.ToString();
-            string assignmentName = selectedAssignment.Split(new[] { " - Ngày Nộp: " }, StringSplitOptions.None)[0];
+            if (selectedAssignmentId == 0)
+            {
+                MessageBox.Show("Không thể xác định bài tập được chọn.");
+                return;
+            }
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string query = "DELETE FROM Assignments WHERE TenBT = @TenBT";
+                    string query = "DELETE FROM Assignments WHERE AssignmentId = @AssignmentId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@TenBT", assignmentName);
+                        command.Parameters.AddWithValue("@AssignmentId", selectedAssignmentId);
                         command.ExecuteNonQuery();
                     }
                 }
 
                 MessageBox.Show("Xóa thành công!");
-                btnLoadAssignments.PerformClick();
+                btnLoadAssignments.PerformClick(); // Làm mới danh sách
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
 
         private void btnEditAssignment_Click(object sender, EventArgs e)
         {
